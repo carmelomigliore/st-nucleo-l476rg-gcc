@@ -154,7 +154,7 @@ SECTIONS
 
     PROVIDE(__heap_size = SIZEOF(.heap));
     PROVIDE(__mbed_sbrk_start = ADDR(.heap));
-    PROVIDE(__mbed_krbs_start = ADDR(.heap) + SIZEOF(.heap));
+    PROVIDE(__mbed_krbs_start = ADDR(.heap) + SIZEOF(.heap))
 
     /* Check if data + heap + stack exceeds RAM limit */
    // ASSERT(__StackLimit >= __HeapLimit, "region RAM overflowed with stack")
