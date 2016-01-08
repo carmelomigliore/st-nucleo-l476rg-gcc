@@ -78,6 +78,23 @@ SECTIONS
     __etext = .;
     _sidata = .;
 
+    /* .stack section doesn't contains any symbols. It is only
+     * used for linker to reserve space for the main stack section
+     * WARNING: .stack should come immediately after the last secure memory
+     * section.  This provides stack overflow detection. */
+    .stack (NOLOAD):
+    {
+        __StackLimit = .;
+        *(.stack*);
+        . += 0x4000 - (. - __StackLimit);
+    } > SRAM2
+
+    /* Set stack top to end of RAM, and stack limit move down by
+     * size of stack_dummy section */
+    __StackTop = ADDR(.stack) + SIZEOF(.stack);
+    __StackLimit = ADDR(.stack);
+    PROVIDE(__stack = __StackTop);
+
     .data : AT (__etext)
     {
         __data_start__ = .;
@@ -114,7 +131,7 @@ SECTIONS
 
     } > SRAM2
 
-    .bss :
+    .bss (NOLOAD):
     {
         . = ALIGN(4);
         __bss_start__ = .;
@@ -126,11 +143,12 @@ SECTIONS
         _ebss = .;
     } > SRAM2
 
-    .heap (COPY):
+    .heap (NOLOAD):
     {
         __end__ = .;
         end = __end__;
-        *(.heap*)
+        *(.heap*);
+        . += (ORIGIN(SRAM2) + LENGTH(SRAM2) - .);
         __HeapLimit = .;
     } > SRAM2
 
@@ -138,21 +156,6 @@ SECTIONS
     PROVIDE(__mbed_sbrk_start = ADDR(.heap));
     PROVIDE(__mbed_krbs_start = ADDR(.heap) + SIZEOF(.heap));
 
-    /* .stack_dummy section doesn't contains any symbols. It is only
-     * used for linker to calculate size of stack sections, and assign
-     * values to stack symbols later */
-    .stack_dummy (COPY):
-    {
-        *(.stack*)
-    } > SRAM2
-
-    /* Set stack top to end of RAM, and stack limit move down by
-     * size of stack_dummy section */
-    __StackTop = ORIGIN(SRAM2) + LENGTH(SRAM2);
-    _estack = __StackTop;
-    __StackLimit = __StackTop - SIZEOF(.stack_dummy);
-    PROVIDE(__stack = __StackTop);
-
     /* Check if data + heap + stack exceeds RAM limit */
-    ASSERT(__StackLimit >= __HeapLimit, "region RAM overflowed with stack")
+   // ASSERT(__StackLimit >= __HeapLimit, "region RAM overflowed with stack")
 }
