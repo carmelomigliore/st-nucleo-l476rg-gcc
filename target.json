@@ -5,6 +5,7 @@
     "mbed-gcc": "*"
   },
   "description": "Unofficial mbed build target for the mbed st-nucleo-l476rg development board.",
+  "author": "Carmelo Migliore <car.miglio@gmail.com>",
   "licenses": [
     {
       "url": "https://spdx.org/licenses/Apache-2.0",
