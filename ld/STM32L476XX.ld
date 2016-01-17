@@ -86,7 +86,7 @@ SECTIONS
     {
         __StackLimit = .;
         *(.stack*);
-        . += 0x4000 - (. - __StackLimit);
+        . += 0x77D0 - (. - __StackLimit);      /*  30672 bytes */
     } > SRAM2
 
     /* Set stack top to end of RAM, and stack limit move down by
@@ -149,9 +149,9 @@ SECTIONS
         __end__ = .;
         end = __end__;
         *(.heap*);
-        . += (ORIGIN(SRAM2) + LENGTH(SRAM2) - .);
+        . += (ORIGIN(SRAM1) + LENGTH(SRAM1) - .);
         __HeapLimit = .;
-    } > SRAM2
+    } > SRAM1
 
     PROVIDE(__heap_size = SIZEOF(.heap));
     PROVIDE(__mbed_sbrk_start = ADDR(.heap));
