@@ -86,7 +86,7 @@ SECTIONS
     {
         __StackLimit = .;
         *(.stack*);
-        . += 0x5000 - (. - __StackLimit);      /*  20480 bytes */
+        . += 0x4000 - (. - __StackLimit);      /*  20480 bytes */
     } > SRAM2
 
     /* Set stack top to end of RAM, and stack limit move down by
